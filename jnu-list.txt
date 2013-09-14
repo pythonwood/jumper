@@ -1,0 +1,18 @@
+http://jwc.jnu.edu.cn/Web/Secure/PaiKeXuanKe/wfrm_XK_Rule.aspx		选课声明(根据是否有按钮确定选课系统是否开通)
+
+http://jwc.jnu.edu.cn/web/Secure/PaiKeXuanKe/wfrm_xk_StudentKcb.aspx	可查“学期可修学分” / 提交后可得课程表
+
+GET:	dlstXndZ＝2013-2014&dlstNdxq=第一学期
+
+resp, content = h.request('https://identi.ca/api/statuses/update.xml', 'POST', urlencode(data),
+			  headers={'Content-Type': 'application/x-www-form-urlencoded'})
+
+
+
+http://jwc.jnu.edu.cn/Web/Secure/Xjgl/Xjgl_Xsxxgl_Xjxxxg_XS.aspx	个人信息页，根据GET响应是否以-- <script>alert('长时间未操作,连接已自动断开，请重新登录！');top.loca--开头可知登陆否
+http://jwc.jnu.edu.cn/web/Secure/PaiKeXuanKe/wfrm_XK_XuanKe.aspx	选课页，若html以<script>top.location.href='/Web/Login.aspx';</script>开头，未登陆，反之已登陆
+
+
+
+
+
