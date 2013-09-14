@@ -1,6 +1,6 @@
 {
 	"name":		"jumper",
-	"version":	"0.0.1",
+	"version":	"1.0",
 	"description":	"begin: 2013-07-06 end: 2013-",
 	"manifest_version": 2,
 //	"brower_action": {			//对浏览器的操作 		//这句真不知是怎样错！原来是差个s！！
@@ -8,19 +8,17 @@
 		"default_icon":	"icon16.png",
 		"popup":	"popup.html"
 	},
-	"permissions": [ 			//权限,用于定义所需的网络资源 
-    		"http://jwc.jnu.edu.cn/*" 
- 	 ],
+	"permissions": ["tabs", "http://jwc.jnu.edu.cn/*"],			//权限,用于定义所需的网络资源 
+//	"permissions": [ "*://*/", "tabs"],
 	"icons":{
         	"16": "icon16.png",
 		"48": "icon48.png",
 		"128": "icon128.png"
 	},
+	"options_page": "options.html",			//为插件提供对应的options选项页面,在manifest文件中添加对应的options_page:选项,使用HTML 
+	//"background": {"scripts": ["jquery.min.js", "background.js"],	"persistent": false},						
+	"background": { "scripts": ["background.js"] },
 	"content_scripts" : [
-		{
-		"matches": ["http://jwc.jnu.edu.cn/Web/Login.aspx-----"],		//区分大小写！
-		"js": ["jquery.min.js", "intelligent_recognition.js"]		//智能识别脚本
-		},
 		{
 		"matches": ["http://jwc.jnu.edu.cn/Web/Secure/PaiKeXuanKe/wfrm_XK_XuanKe.aspx"],		
 		"js": ["jquery.min.js", "click.js"],
@@ -31,7 +29,5 @@
 		"js": ["jquery.min.js", "readme_click.js"],
 		"all_frames": true		
 		}
-	],
-	"background": { "scripts": ["background.js"] },
-	"options_page": "options.html"		//为插件提供对应的options选项页面,在manifest文件中添加对应的options_page:选项,使用HTML 
+	]
 }

@@ -1,28 +1,29 @@
-﻿//(function($){
-function is_target_right($a){	$a.css({"color":"red"}).attr({"title":"jumper target right?"});	}
-//})($)
-
-function callback(dict){
-    $subm = $("input:submit")
-    if (dict["state"]==1){
-	setTimeout($subm[5].click(), 3000)
-    }else if (dict["state"]==2){
-	$subm[0].click()
-    }else if (dict["state"]==0){
-	$subm[0].click()
-    }
-}	
-
-$(
-
-function(){
+﻿$(function(){
 	console.log("jumper-start-ok")
 
 	$subm = $("input:submit")	
 	if($subm.length == 2){					//确认选课页
 //		$subm[0].click()				//可能弹窗，因此可能永远不成功，所以只试一次
 //		$subm[1].click()				//
-		chrome
+		id = $(this).next("td:first").text()
+		chrome.extension.sendMessage({"q":"state"}, function(dict){					//state问题
+			$.each(dict, function(k, v){
+				if (id == k){
+					//chrome.extension.sendMessage({"q":"sure","id":id}, function(first_time){//sure问题
+					//	if (first_time){
+					//		$subm[0].click()
+					//	}else{
+					//		$subm[1].click()
+					//	}
+					//chrome.extension.sendMessage({"q":"state"}, function(dict_in){	//state问题
+					//	if (dict_in[id]["count"] != dict[id]["count"])	$subm[0].click()
+				        chrome.extension.sendMessage({"q":"stop", "id":id}, function(){
+					    $subm[0].click() 
+					    console.log("sure and delete callback ~ ok")//short quiet well! take it esay! oh yeah
+					})
+				}
+			})
+		})
 	}else if($subm.length == 4){				//刚进入，未有操作时
 		if($subm[1].disabled == false)
 			$subm[1].click()			//默认打开我的选课
@@ -32,37 +33,68 @@ function(){
 	}else if($subm.length == 6){				//返回查询结果时
 		$course_tr = $("tbody:last:not(:has(input)) tr:not(:first)")
 		$course_tr.find("td:first").append("<a href='#' title='start'>&nbsp;&gt;</a>&nbsp;<a href='#' title='stop'>|</a>")
+
+		chrome.extension.sendMessage({"q":"state"}, function(dict){					//state问题
+		        console.log("state callback ~ para dict: " + dict + " typeof: " + typeof(dict) + " dict==null: " + (dict==null) + " dict.length: " + dict.length)
+		    //硬骨头
+		    if(typeof(dict) != "undefined"){
+		        //if(g_dict){
+//try{
+			$.each(dict, function(k, v){
+			        console.log("in $.each() key: " + k)
+				//console.log("dict.size(): " + dict.size())//无size()，出异常
+				$line = $("table:last tr:contains('" +k+ "')")
+				if ($line.length>0){	
+					if( parseInt($line.find("td:eq(10)").text()) - parseInt($line.find("td:eq(11)").text()) > 0 ){
+						setTimeout(function(){$line.find("a:first").click()}, 2100)
+					}else{
+						chrome.extension.sendMessage({"q":"count","id":k}, function(count){	//count问题
+							$subm[5].value = "" + count + "!"
+						})
+						setTimeout("$subm[5].click()", 2100)				//探监间隔
+					}
+				}
+			})}
+//catch(err){console.log(err.what())}
+		})
+		console.log("gocenter")
+
+	        //消息异步处理，所以会到这里
+	        //if click "start"
 		$("a[title=start]").click(function(){
-//			var bgpg = chrome.extension.getBackgroundPage();	//Uncaught Error: "getBackgroundPage" can only be used in extension processes. 
-//			console.log("data: " + bgpg.global_state + ", " + bgpg.global_tr_index_ok)
-			tr_index_ok = $(this).parent().parent().prevAll().length - 1
-			console.log("index: "+tr_index_ok)
-//			bgpg.global_state = 1
-//			bgpg.global_tr_index_ok = tr_index_ok 
-			$tr_todeal = $($course_tr[tr_index_ok])
-			console.log($tr_todeal.find("td:eq(10)").text())
-			if(parseInt($tr_todeal.find("td:eq(10)").text()) - parseInt($tr_todeal.find("td:eq(11)").text()) > 0){
-//				$tr_todeal.children("a")[0].click()
-			}else{
-				setTimeout("$subm[5].click()", 2000)
-			}
+		        console.log("start checking")
+			id = $(this).parent().next().text()
+		        console.log("send start id: " + id)
+			chrome.extension.sendMessage({"q":"start", "id":id}, function(){
+			    setTimeout("$subm[5].click()", 2100)
+			    console.log("start callback ~ ok")
+			})//setTimeout($subm[5].click(), 2100))		//start问题
+		        console.log("sent message")
+		        return false
 		})
+	        console.log("click one")
+
+	        //if click "stop"
 		$("a[title=stop]").click(function(){
+			id = $(this).parent().next().text()
+			chrome.extension.sendMessage({"q":"stop", "id":id}, function(){
+			    setTimeout("$subm[5].click()", 2100)
+			    console.log("stop callback ~ ok")
+			})//setTimeout($subm[5].click(), 2100))		//stop问题
+		        return false
 		})
+	        console.log("click twice")
+
+
+	        chrome.extension.sendMessage({"q":"state"}, function(dict){					//state问题
+		    if (dict=='undefine'){
+			setTimeout(function(){$subm[5].click()}, 90000)						//自行刷新保持session,防止自动执行
+		    }
+		})
+	        console.log("click thrid")
 	}
 
 			//没有输入框的表格的非首行tr
-	$("tbody:last:not(:has(input)) tr:not(:first):odd").css({"backgroundColor":"#bbddff"})		//美观，行与行交替着色
+	$("tbody:last:not(:has(input)) tr:not(:first):odd").css({"backgroundColor":"#bbeeff"})		//美观，行与行交替着色
 
-//	$a_click = $("a:even")
-//	is_target_right($a_click)
-
-//	console.log($("#btnKkLb").attr("disabled"))
-//	if($("#btnKkLb").attr("disabled") == "disabled"){
-//		$a_click[0].click()
-//		console.log("click " + $("submit:disabled").text())
-//	}
-
-}
-
-)
+})
