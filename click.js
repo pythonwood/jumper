@@ -1,6 +1,11 @@
-﻿$(function(){   
+﻿//后来发现：很明显用函数tlog可以更好地重用代码，减少代码量。2013-09-05
+//function tlog(str){console.log(new Date().toLocaleString() + ":  " + str)}
+
+//内存问题：后台变量用Array明显出现，后来放弃了。改用Object，无法得到详细内存差异数据，期待验证
+
+$(function(){   
     $subm = $("input:submit")
-    console.log("jumper-start-ok ~ submit-num: " + $subm.length)
+    //console.log("jumper-start-ok ~ submit-num: " + $subm.length)
     
 
     //因这部分需要，将ID全由排班班号改成课程编号。
@@ -8,7 +13,7 @@
 	//      $subm[0].click()                            //可能弹窗，因此可能永远不成功，所以只试一次
 	//      $subm[1].click()                            //
         id = $("input:text").val()
-	console.log("sure id: " + id)
+//	console.log("sure id: " + id)
         chrome.extension.sendMessage({"q":"state"}, function(dict){                                     //state问题
             //dict = Array(dict)
             for(k in dict){//$.each(dict, function(k, v){
@@ -22,8 +27,9 @@
                     //chrome.extension.sendMessage({"q":"state"}, function(dict_in){        //state问题
                     //      if (dict_in[id]["count"] != dict[id]["count"])  $subm[0].click()
                     chrome.extension.sendMessage({"q":"stop", "id":id}, function(){
+			//增加提示，人性化
+                        console.log(new Date().toLocaleString() + ":  after " + dict[id]["count"] + "times. submit sure" + id + " and delete callback ~ ok")//short quiet well! take it esay! oh yeah
                         $subm[0].click() 
-                        console.log("submit sure and delete callback ~ ok")//short quiet well! take it esay! oh yeah
                     })
                 }
             }//)
@@ -63,16 +69,18 @@
 		//$.each(dict, function(k, v){
                 for(k in dict){
 		    //console.log("in $.each() key: " + k)
-                    console.log("for() ~ key: " + k)
+                    //console.log("for() ~ key: " + k)
                     //console.log("dict.size(): " + dict.size())//无size()，出异常
                     $line = $("table:last tr:contains('" +k+ "')")
                     if ($line.length>0){
+			//移除">" 显得人性化
+			$line.find("a[title=start]").remove()//@2013-09-05
                         if( parseInt($line.find("td:eq(10)").text()) - parseInt($line.find("td:eq(11)").text()) > 0 ){
-			    console.log("enought")
+			    //console.log("enought")
                             $line.find("a:first")[0].click()//必须是javascript层的click才行！！
 			    //console.log("a:first: " +  $line.find("a:first").attr("href"))
                         }else{
-			    console.log("not enought")
+			    //console.log("not enought")
                             chrome.extension.sendMessage({"q":"count","id":k}, function(count){     //count问题
                                 $subm[5].value = "" + count
                             })
@@ -89,16 +97,16 @@
         //消息异步处理，所以会到这里
         //if click "start"    //start问题
         $("a[title=start]").click(function(){
-            console.log("start checking")
+//            console.log("start checking")
             //id = $(this).parent().next().text()
 	    id = $(this).parent().next().next().text()//由排班班号改成课程编号。
-            console.log("send start id: " + id)
+            console.log(new Date().toLocaleString() + ":  send start id: " + id)
             chrome.extension.sendMessage({"q":"start", "id":id}, function(){
                 setTimeout("$subm[5].click()", 2100)
-                console.log("start callback ~ ok")
+//                console.log("start callback ~ ok")
 		//setTimeout($subm[5].click(), 2100))
             })
-            console.log("sent message")
+//            console.log("sent message")
             return false
         })
 //	console.log("click one")
@@ -128,11 +136,14 @@
         })
 //	console.log("click thrid")
 
+	//增加提示，软件人性化
+	$($subm[3]).after("<span style=\"color:gray;font-size:13px\"><strong>jumper</strong>: enter F12 , goto \"console\" panel to know <strong>TIME</strong> you make it!</span>")
+
 	//endof:  $subm.length == 6
     }
 
     //美观，行与行交替着色
     //没有输入框的表格的非首行tr
-    $("tbody:last:not(:has(input)) tr:not(:first):odd").css({"backgroundColor":"#bbeeff"})          
+    $("tbody:last:not(:has(input)) tr:not(:first):odd").css({"backgroundColor":"rgb(208,233,255)"})          
 
 })

@@ -1,17 +1,17 @@
 {
 	"name":		"jumper",
 	"version":	"1.0",
-	"description":	"begin: 2013-07-06 end: 2013-",
+	"description":	"make for JNU university from 2013-07-06 to 2013-09-06",
 	"manifest_version": 2,
 //	"brower_action": {			//对浏览器的操作 		//这句真不知是怎样错！原来是差个s！！
-	"browser_action": {
-		"default_icon":	"icon16.png",
-		"popup":	"popup.html"
-	},
+//	"browser_action": {
+//		"default_icon":	"icon16.png",	//小图标不需显示
+//		"popup":	"popup.html"
+//	},
 	"permissions": ["tabs", "http://jwc.jnu.edu.cn/*"],			//权限,用于定义所需的网络资源 
 //	"permissions": [ "*://*/", "tabs"],
 	"icons":{
-        	"16": "icon16.png",
+        	"16": "icon16.png",		//不能是19的
 		"48": "icon48.png",
 		"128": "icon128.png"
 	},
@@ -27,6 +27,11 @@
 		{
 		"matches": ["http://jwc.jnu.edu.cn/Web/Secure/PaiKeXuanKe/wfrm_Xk_ReadMeCn.aspx"],	
 		"js": ["jquery.min.js", "readme_click.js"],
+		"all_frames": true		
+		},
+		{
+		"matches": ["http://jwc.jnu.edu.cn/Web/areaLeft.aspx"],	
+		"js": ["jquery.min.js", "area-left.js"],
 		"all_frames": true		
 		}
 	]
