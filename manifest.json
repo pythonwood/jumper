@@ -1,6 +1,6 @@
 {
 	"name":		"jumper",
-	"version":	"1.0",
+	"version":	"1.1",
 	"description":	"make for JNU university from 2013-07-06 to 2013-09-06",
 	"manifest_version": 2,
 //	"brower_action": {			//对浏览器的操作 		//这句真不知是怎样错！原来是差个s！！
