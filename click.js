@@ -1,149 +1,140 @@
-﻿//后来发现：很明显用函数tlog可以更好地重用代码，减少代码量。2013-09-05
-//function tlog(str){console.log(new Date().toLocaleString() + ":  " + str)}
+﻿// 后来发现：很明显用函数tlog可以更好地重用代码，减少代码量。2013-09-05
+function tlog(str){console.log(new Date().toLocaleString() + ":  " + str)}
 
-//内存问题：后台变量用Array明显出现，后来放弃了。改用Object，无法得到详细内存差异数据，期待验证
+// 内存问题：后台变量用Array明显出现，后来放弃了。改用Object，无法得到详细内存差异数据，期待验证
 
 $(function(){   
     $subm = $("input:submit")
-    //console.log("jumper-start-ok ~ submit-num: " + $subm.length)
-    
+    // console.log("jumper-start-ok ~ submit-num: " + $subm.length)      //debugging!
 
-    //因这部分需要，将ID全由排班班号改成课程编号。
-    if($subm.length == 2){                                  //确认选课页
-	//      $subm[0].click()                            //可能弹窗，因此可能永远不成功，所以只试一次
-	//      $subm[1].click()                            //
-        id = $("input:text").val()
-//	console.log("sure id: " + id)
-        chrome.extension.sendMessage({"q":"state"}, function(dict){                                     //state问题
-            //dict = Array(dict)
+    // 2:确认选课页
+    if($subm.length == 2){                                  
+        // $subm[0].click()                            // 可能弹窗，因此可能永远不成功，所以只试一次
+        id = $("#txtFpkbh").text()
+        chrome.extension.sendMessage({"q":"state"}, function(dict){                                     
             for(k in dict){//$.each(dict, function(k, v){
-                if (id == k){
-                    //chrome.extension.sendMessage({"q":"sure","id":id}, function(first_time){//sure问题
-                    //      if (first_time){
-                    //              $subm[0].click()
-                    //      }else{
-                    //              $subm[1].click()
-                    //      }
-                    //chrome.extension.sendMessage({"q":"state"}, function(dict_in){        //state问题
-                    //      if (dict_in[id]["count"] != dict[id]["count"])  $subm[0].click()
+                // 如果是在列的ID，则先发送stop消息后单击确定，保证点击确定的次数为1次。
+                if (id == k){   
                     chrome.extension.sendMessage({"q":"stop", "id":id}, function(){
-			//增加提示，人性化
-                        console.log(new Date().toLocaleString() + ":  after " + dict[id]["count"] + "times. submit sure" + id + " and delete callback ~ ok")//short quiet well! take it esay! oh yeah
+                        //增加提示，人性化
+                        //console.log(new Date().toLocaleString() + ":  after " + (dict[id]["count"]+1) + " times. submit sure" + id + " and delete callback ~ ok")//easier! take it esay! oh yeah
+                        tlog("success after " + (dict[id]["count"]+1) + " time!") 
                         $subm[0].click() 
                     })
                 }
-            }//)
+            }
         })
-    }else if($subm.length == 4){                            //刚进入，未有操作时
-        if($subm[1].disabled == false)
-            $subm[1].click()                        //默认打开我的选课
-    }else if($subm.length == 5){                            //选择过滤条件时
+
+    //4:刚进入，未有操作时 // 5:选择过滤条件时// 6:返回查询结果时
+    }else if($subm.length == 4){                            
+        // console.log("" + $subm[1].disabled + $subm[1].enabled)
+        // 无打开时四个按钮可用，然则默认打开我的选课
+        if(!$subm[1].disabled){
+            $subm[1].click()                        
+        }
+    }else if($subm.length == 5){                            
         $selopt = $("select:first option")
-        $selopt[$selopt.length-1].selected = true;      //默认范围是通识选修，或者全部课程
-    }else if($subm.length == 6){                            //返回查询结果时
-	//增加功能键
+        $selopt[$selopt.length-1].selected = true;      // 课程范围的默认范围设置为通识选修，或者全部课程
+    }else if($subm.length == 6){                            
+        //增加功能键 " > || "
         $course_tr = $("tbody:last:not(:has(input)) tr:not(:first)")
-        $course_tr.find("td:first").append("<a href='#' title='start'>&nbsp;&gt;</a>&nbsp;<a href='#' title='stop'>|</a>")
+        $course_tr.find("td:first").append("<a href='#' title='start'>&nbsp;&gt;</a>&nbsp;<a href='#' title='stop'>||</a>")
 
-	//调用默认行为得用javascript层的click()
-	//$course_tr.find("td:first").attr("onclick", $course_tr.find("td:first").attr("href"))
-
-        //发送消息：state问题
-        chrome.extension.sendMessage({"q":"state"}, function(dict){
-            //硬骨头
-            //dict = (Array)dict;//dict = Array(dict) //diff!     //转换成Array的尝试失败了。!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //dict = dict.toArray();//TypeError: Object #<Object> has no method 'toArray'
-	    //打印对象的有用消息
-            //console.log("state callback ~ para dict: " + dict + " dict==undefined: " + (dict==undefined) + " typeof: " + typeof(dict) + " dict==null: " + (dict==null) + " dict==false: " + (dict==false))
-	    //对象为null时会出现异常
-            //console.log("dict.length: " + dict.length + " toString: " + dict.toString())
-	    //Array有length，Object无,Array继承自Object，参数传递时退化为Object
-            //if(dict.length > 0){
-	    //效果等同于 dict == undefined
-            //if(typeof(dict) != undefined){
-	    //null也是对象，不等于undefined，javascript很怪异
-	    //if (dict==null){}else{
-		//console.log("dict not null")
-//try{
-	        //each是jQuery封装，用时出现过TypeErr，不放心
-		//$.each(dict, function(k, v){
-                for(k in dict){
-		    //console.log("in $.each() key: " + k)
-                    //console.log("for() ~ key: " + k)
-                    //console.log("dict.size(): " + dict.size())//无size()，出异常
-                    $line = $("table:last tr:contains('" +k+ "')")
-                    if ($line.length>0){
-			//移除">" 显得人性化
-			$line.find("a[title=start]").remove()//@2013-09-05
-                        if( parseInt($line.find("td:eq(10)").text()) - parseInt($line.find("td:eq(11)").text()) > 0 ){
-			    //console.log("enought")
-                            $line.find("a:first")[0].click()//必须是javascript层的click才行！！
-			    //console.log("a:first: " +  $line.find("a:first").attr("href"))
-                        }else{
-			    //console.log("not enought")
-                            chrome.extension.sendMessage({"q":"count","id":k}, function(count){     //count问题
-                                $subm[5].value = "" + count
-                            })
-                            setTimeout("$subm[5].click()", 2100)                            //探监间隔
+        //调用默认行为得用javascript层的click()
+        //$course_tr.find("td:first").attr("onclick", $course_tr.find("td:first").attr("href"))
+        
+        //filer 
+        $.each([0,2,4,8,16,32,64], function(x,i){
+            $item = $('<sapn id="filter" title="显示剩余'+i+'位以下的抢手货">[<a href="#">'+i+'</a>]</span>')
+                $item.insertAfter("span#lblTs0")
+                $item.click(function(){
+                    $line = $("table:last tr:gt(0)")
+                    $line.each(function(){
+                        A = parseInt($(this).find("td:eq(10)").text())
+                        B = parseInt($(this).find("td:eq(11)").text())
+                        //console.log(""+A+" "+B)
+                        if (A==B){
+                            $(this).remove();
                         }
-                    }
-                }
-		//})
-            //}
-//catch(err){console.log(err.what())}
+                        if (i>0 && A-B>i){
+                            $(this).remove();
+                        }
+                    })
+                // useless
+                // $("table:last:not(:has(input)) tr:not(:first):odd").css({"backgroundColor":"rgb(2082c233,255)"})
+                // $("table:last:not(:has(input)) tr:not(:first):even").css({"backgroundColor":"rgb(228,253,255)"})
+                })
         })
-//        console.log("gocenter")
+
+        $("input:text").val("5000").attr({'title':'jumper: changed!'}).focus();
+        //未能很好实现
+        /*//show all in one page
+        $('<span id="allinpage">[<a href="#">显示</a>]</span>').insertBefore("span#lblTs0").click(function(){
+            $item = $("input:text");
+            $item.val('5000').focus();
+            // bad! //$item.simulateKeyPress('\0x0a')
+            // var e = jQuery.Event("keydown");//模拟一个键盘事件
+            // e.keyCode = 13;//keyCode=13是回车
+            // $item.trigger(e);//模拟页码框按下回车
+            // simulateKeyPress('\0x0a');
+            $item.triggerHandler("keypress")
+        })*/
+        
+
+
+        chrome.extension.sendMessage({"q":"state"}, function(dict){
+            for(k in dict){
+                $line = $("table:last tr:contains('" +k+ "')")
+                    if ($line.length>0){
+                        // 移除 " > "  显得人性化
+                        $line.find("a[title=start]").remove()   // @2013-09-05
+                            if( parseInt($line.find("td:eq(10)").text()) - parseInt($line.find("td:eq(11)").text()) > 0 ){
+                                $line.find("a:first")[0].click()    // 必须是javascript层的click才行！！
+                            }else{
+                                chrome.extension.sendMessage({"q":"count","id":k}, function(count){     
+                                    $subm[5].value = "" + count
+                                })
+                                setTimeout("$subm[5].click()", 2100)                            // 设置探监间隔
+                            }
+                    }
+            }
+        })
 
         //消息异步处理，所以会到这里
-        //if click "start"    //start问题
+        // 单击开始的响应函数
         $("a[title=start]").click(function(){
-//            console.log("start checking")
-            //id = $(this).parent().next().text()
-	    id = $(this).parent().next().next().text()//由排班班号改成课程编号。
-            console.log(new Date().toLocaleString() + ":  send start id: " + id)
+            id = $(this).parent().next().text()     // 由排课程编号改成排班号。
+            // console.log(new Date().toLocaleString() + ":  send start id: " + id)
+            tlog("start: " + id)
             chrome.extension.sendMessage({"q":"start", "id":id}, function(){
                 setTimeout("$subm[5].click()", 2100)
-//                console.log("start callback ~ ok")
-		//setTimeout($subm[5].click(), 2100))
             })
-//            console.log("sent message")
-            return false
+            return false    // 连接不跳转
         })
-//	console.log("click one")
 
-        //if click "stop"
+        // 单击停止的响应函数
         $("a[title=stop]").click(function(){
-            //id = $(this).parent().next().text()
-	    id = $(this).parent().next().next().text()//由排班班号改成课程编号。
-	    //stop问题
+            id = $(this).parent().next().text()     // 由排课程编号改成排班号。
             chrome.extension.sendMessage({"q":"stop", "id":id}, function(){
                 setTimeout("$subm[5].click()", 2100)
-                console.log("stop callback ~ ok")
-		//setTimeout($subm[5].click(), 2100))
+                // console.log("stop callback ~ ok")
+                tlog("stop: " + id)
             })         
             return false
         })
-//	console.log("click twice")
-	
-	//state问题
+    
         chrome.extension.sendMessage({"q":"state"}, function(dict){                                    
-            //if (dict.length==0){
-	    //if (dict==null){
-            //if (dict==undefined){
-		//自行刷新保持session,防止自动执行
-                setTimeout(function(){$subm[5].click()}, 90000)                                         
-            //}
+            //自行刷新保持session,防止自动执行
+            setTimeout(function(){$subm[5].click()}, 90000)                                         
         })
-//	console.log("click thrid")
 
-	//增加提示，软件人性化
-	$($subm[3]).after("<span style=\"color:gray;font-size:13px\"><strong>jumper</strong>: enter F12 , goto \"console\" panel to know <strong>TIME</strong> you make it!</span>")
-
-	//endof:  $subm.length == 6
+        //增加提示，软件人性化
+        $($subm[3]).after("<span style=\"color:gray;font-size:13px\"><strong>jumper</strong>: enter F12 , goto \"console\" panel to know <strong>TIME</strong> you make it!</span>")
     }
+    // "if length==6" end 
 
     //美观，行与行交替着色
     //没有输入框的表格的非首行tr
-    $("tbody:last:not(:has(input)) tr:not(:first):odd").css({"backgroundColor":"rgb(208,233,255)"})          
+    $("table:last:not(:has(input)) tr:not(:first):odd").css({"backgroundColor":"rgb(208,233,255)"})          
 
 })

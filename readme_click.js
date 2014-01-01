@@ -1,3 +1,3 @@
 $(
-$("input:submit")[0].click()
+    $("input:submit")[0].click()
 )
