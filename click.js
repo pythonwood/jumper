@@ -43,50 +43,6 @@ $(function(){
         //调用默认行为得用javascript层的click()
         //$course_tr.find("td:first").attr("onclick", $course_tr.find("td:first").attr("href"))
         
-        //filer 
-        $.each([0,2,4,8,16,32,64], function(x,i){
-            $item = $('<sapn id="filter" title="显示剩余'+i+'位以下的抢手货">[<a href="#">'+i+'</a>]</span>')
-                $item.insertAfter("span#lblTs0")
-                $item.click(function(){
-                    $line = $("table:last tr:gt(0)")
-                    $line.each(function(){
-                        A = parseInt($(this).find("td:eq(10)").text())
-                        B = parseInt($(this).find("td:eq(11)").text())
-                        //console.log(""+A+" "+B)
-                        if (A==B){
-                            $(this).remove();
-                        }
-                        if (i>0 && A-B>i){
-                            $(this).remove();
-                        }
-                    })
-                // useless
-                // $("table:last:not(:has(input)) tr:not(:first):odd").css({"backgroundColor":"rgb(2082c233,255)"})
-                // $("table:last:not(:has(input)) tr:not(:first):even").css({"backgroundColor":"rgb(228,253,255)"})
-                })
-        })
-
-
-        //show all in one page
-        $("span#lblTs0").attr("title", "单击:一页显示所有课程").click(function(){
-            $("input:text").val("5000").attr({'title':'jumper: changed!'}).focus()
-            setTimeout("$subm[5].click()", 2000)
-        })
-
-        // $("input:text").val("5000").attr({'title':'jumper: changed!'}).focus();    //二次退求
-        //首次尝试未能很好实现
-        /*
-        $('<span id="allinpage">[<a href="#">显示</a>]</span>').insertBefore("span#lblTs0").click(function(){
-            $item = $("input:text");
-            $item.val('5000').focus();
-            // bad! //$item.simulateKeyPress('\0x0a')
-            // var e = jQuery.Event("keydown");//模拟一个键盘事件
-            // e.keyCode = 13;//keyCode=13是回车
-            // $item.trigger(e);//模拟页码框按下回车
-            // simulateKeyPress('\0x0a');
-            $item.triggerHandler("keypress")
-        })*/
-        
 
 
         chrome.extension.sendMessage({"q":"state"}, function(dict){
@@ -101,7 +57,7 @@ $(function(){
                                 chrome.extension.sendMessage({"q":"count","id":k}, function(count){     
                                     $subm[5].value = "" + count
                                 })
-                                setTimeout("$subm[5].click()", 2100)                            // 设置探监间隔
+                                setTimeout("$subm[5].click()", 2000)                            // 设置探监间隔
                             }
                     }
             }
@@ -114,7 +70,7 @@ $(function(){
             // console.log(new Date().toLocaleString() + ":  send start id: " + id)
             tlog("start: " + id)
             chrome.extension.sendMessage({"q":"start", "id":id}, function(){
-                setTimeout("$subm[5].click()", 2100)
+                setTimeout("$subm[5].click()", 2000)
             })
             return false    // 连接不跳转
         })
@@ -123,20 +79,48 @@ $(function(){
         $("a[title=stop]").click(function(){
             id = $(this).parent().next().text()     // 由排课程编号改成排班号。
             chrome.extension.sendMessage({"q":"stop", "id":id}, function(){
-                setTimeout("$subm[5].click()", 2100)
+                setTimeout("$subm[5].click()", 2000)
                 // console.log("stop callback ~ ok")
                 tlog("stop: " + id)
             })         
             return false
         })
-    
+
+        //以下几个不放在无自动选课列表时，因为多标签时其它可能要用。
+
+        //filer 
+        $.each([0,2,4,8,16,32,64], function(x,i){
+            $item = $('<sapn id="filter" title="显示剩余'+i+'位以下的抢手货">[<a href="#">'+i+'</a>]</span>')
+            $item.insertAfter("span#lblTs0")
+            $item.click(function(){
+                $line = $("table:last tr:gt(0)")
+                $line.each(function(){
+                    A = parseInt($(this).find("td:eq(10)").text())
+                    B = parseInt($(this).find("td:eq(11)").text())
+                    //console.log(""+A+" "+B)
+                    if (A==B){
+                        $(this).remove();
+                    }
+                if (i>0 && A-B>i){
+                    $(this).remove();
+                }
+                })
+            })
+        })
+
+        //show all in one page
+        $("span#lblTs0").attr("title", "单击:一页显示所有课程").click(function(){
+            $("input:text").val("5000").attr({'title':'jumper: changed!'}).focus()
+            setTimeout("$subm[5].click()", 2000)
+        })
+
         chrome.extension.sendMessage({"q":"state"}, function(dict){                                    
             //自行刷新保持session,防止自动执行
             setTimeout(function(){$subm[5].click()}, 90000)                                         
         })
-
         //增加提示，软件人性化
         $($subm[3]).after("<span style=\"color:gray;font-size:13px\"><strong>jumper</strong>: enter F12 , goto \"console\" panel to know <strong>TIME</strong> you make it!</span>")
+
     }
     // "if length==6" end 
 
