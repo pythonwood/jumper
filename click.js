@@ -66,9 +66,16 @@ $(function(){
                 })
         })
 
-        $("input:text").val("5000").attr({'title':'jumper: changed!'}).focus();
-        //未能很好实现
-        /*//show all in one page
+
+        //show all in one page
+        $("span#lblTs0").attr("title", "单击:一页显示所有课程").click(function(){
+            $("input:text").val("5000").attr({'title':'jumper: changed!'}).focus()
+            setTimeout("$subm[5].click()", 2000)
+        })
+
+        // $("input:text").val("5000").attr({'title':'jumper: changed!'}).focus();    //二次退求
+        //首次尝试未能很好实现
+        /*
         $('<span id="allinpage">[<a href="#">显示</a>]</span>').insertBefore("span#lblTs0").click(function(){
             $item = $("input:text");
             $item.val('5000').focus();
