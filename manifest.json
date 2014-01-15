@@ -33,6 +33,11 @@
 		"matches": ["http://jwc.jnu.edu.cn/Web/areaLeft.aspx"],	
 		"js": ["jquery.min.js", "area-left.js"],
 		"all_frames": true		
+		},
+		{
+		"matches": ["http://jwc.jnu.edu.cn/Web/Secure/Cjgl/Cjgl_Cjcx_XsCxXqCj.aspx"],	
+		"js": ["jquery.min.js", "mark.js"],
+		"all_frames": true		
 		}
 	]
 }
