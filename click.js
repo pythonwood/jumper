@@ -114,10 +114,11 @@ $(function(){
             setTimeout("$subm[5].click()", 2000)
         })
 
-        chrome.extension.sendMessage({"q":"state"}, function(dict){                                    
-            //自行刷新保持session,防止自动执行
-            setTimeout(function(){$subm[5].click()}, 90000)                                         
-        })
+        // chrome.extension.sendMessage({"q":"state"}, function(dict){                                    
+        //     //自行刷新保持session,防止自动执行
+        //     setTimeout(function(){$subm[5].click()}, 90000)                                         
+        // })
+        
         //增加提示，软件人性化
         $($subm[3]).after("<span style=\"color:gray;font-size:13px\"><strong>jumper</strong>: enter F12 , goto \"console\" panel to know <strong>TIME</strong> you make it!</span>")
 

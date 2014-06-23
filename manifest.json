@@ -1,6 +1,6 @@
 {
 	"name":		"jumper",
-	"version":	"1.2",
+	"version":	"1.3",
 	"description":	"make for JNU university from 2013-07-06 to 2013-09-06",
 	"manifest_version": 2,
 //	"brower_action": {			//对浏览器的操作 		//这句真不知是怎样错！原来是差个s！！
@@ -8,7 +8,7 @@
 //		"default_icon":	"icon16.png",	//小图标不需显示
 //		"popup":	"popup.html"
 //	},
-	"permissions": ["tabs", "http://jwc.jnu.edu.cn/*"],			//权限,用于定义所需的网络资源 
+	"permissions": ["tabs", "http://jwc.jnu.edu.cn/*", "http://202.116.0.176/*"],			//权限,用于定义所需的网络资源 
 //	"permissions": [ "*://*/", "tabs"],
 	"icons":{
         	"16": "icon16.png",		//不能是19的
@@ -20,22 +20,22 @@
 	"background": { "scripts": ["background.js"] },
 	"content_scripts" : [
 		{
-		"matches": ["http://jwc.jnu.edu.cn/Web/Secure/PaiKeXuanKe/wfrm_XK_XuanKe.aspx"],		
+		"matches": ["http://jwc.jnu.edu.cn/Web/Secure/PaiKeXuanKe/wfrm_XK_XuanKe.aspx", "http://202.116.0.176/Secure/PaiKeXuanKe/wfrm_XK_XuanKe.aspx"],		
 		"js": ["jquery.min.js", "click.js"],
 		"all_frames": true						//为了iframe frame都响应js
 		},
 		{
-		"matches": ["http://jwc.jnu.edu.cn/Web/Secure/PaiKeXuanKe/wfrm_Xk_ReadMeCn.aspx"],	
+		"matches": ["http://jwc.jnu.edu.cn/Web/Secure/PaiKeXuanKe/wfrm_Xk_ReadMeCn.aspx", "http://202.116.0.176/Secure/PaiKeXuanKe/wfrm_Xk_ReadMeCn.aspx"],	
 		"js": ["jquery.min.js", "readme_click.js"],
 		"all_frames": true		
 		},
 		{
-		"matches": ["http://jwc.jnu.edu.cn/Web/areaLeft.aspx"],	
+		"matches": ["http://jwc.jnu.edu.cn/Web/areaLeft.aspx", "http://202.116.0.176/areaLeft.aspx"],	
 		"js": ["jquery.min.js", "area-left.js"],
 		"all_frames": true		
 		},
 		{
-		"matches": ["http://jwc.jnu.edu.cn/Web/Secure/Cjgl/Cjgl_Cjcx_XsCxXqCj.aspx"],	
+		"matches": ["http://jwc.jnu.edu.cn/Web/Secure/Cjgl/Cjgl_Cjcx_XsCxXqCj.aspx", "http://202.116.0.176/Secure/Cjgl/Cjgl_Cjcx_XsCxXqCj.aspx"],	
 		"js": ["jquery.min.js", "mark.js"],
 		"all_frames": true		
 		}
