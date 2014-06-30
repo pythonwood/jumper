@@ -35,7 +35,7 @@ jumper是一个chrome **extend**,chromium同样
 **v1.3**
 
 #. 开发环境变成XUbuntu14.04和chromium34
-#. 修正url，使适应http://202.116.0.176新地址
+#. 修正url，使适应http://202.116.0.176 新地址
 #. 优化定期刷新
   
 杂碎

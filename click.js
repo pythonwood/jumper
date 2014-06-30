@@ -1,16 +1,18 @@
 ﻿// 后来发现：很明显用函数tlog可以更好地重用代码，减少代码量。2013-09-05
-function tlog(str){console.log(new Date().toLocaleString() + ":  " + str)}
+function tlog(str){
+    console.log(new Date().toLocaleString() + ":  " + str);
+}
 
 // 内存问题：后台变量用Array明显出现，后来放弃了。改用Object，无法得到详细内存差异数据，期待验证
 
 $(function(){   
-    $subm = $("input:submit")
+    $subm = $("input:submit");
     // console.log("jumper-start-ok ~ submit-num: " + $subm.length)      //debugging!
 
     // 2:确认选课页
     if($subm.length == 2){                                  
         // $subm[0].click()                            // 可能弹窗，因此可能永远不成功，所以只试一次
-        id = $("#txtFpkbh").text()
+        id = $("#txtFpkbh").text();
         chrome.extension.sendMessage({"q":"state"}, function(dict){                                     
             for(k in dict){//$.each(dict, function(k, v){
                 // 如果是在列的ID，则先发送stop消息后单击确定，保证点击确定的次数为1次。
@@ -18,8 +20,8 @@ $(function(){
                     chrome.extension.sendMessage({"q":"stop", "id":id}, function(){
                         //增加提示，人性化
                         //console.log(new Date().toLocaleString() + ":  after " + (dict[id]["count"]+1) + " times. submit sure" + id + " and delete callback ~ ok")//easier! take it esay! oh yeah
-                        tlog("success after " + (dict[id]["count"]+1) + " time!") 
-                        $subm[0].click() 
+                        tlog("success after " + (dict[id]["count"]+1) + " time!");
+                        $subm[0].click();
                     })
                 }
             }
@@ -30,15 +32,15 @@ $(function(){
         // console.log("" + $subm[1].disabled + $subm[1].enabled)
         // 无打开时四个按钮可用，然则默认打开我的选课
         if(!$subm[1].disabled){
-            $subm[1].click()                        
+            $subm[1].click();                        
         }
     }else if($subm.length == 5){                            
-        $selopt = $("select:first option")
+        $selopt = $("select:first option");
         $selopt[$selopt.length-1].selected = true;      // 课程范围的默认范围设置为通识选修，或者全部课程
     }else if($subm.length == 6){                            
         //增加功能键 " > || "
-        $course_tr = $("tbody:last:not(:has(input)) tr:not(:first)")
-        $course_tr.find("td:first").append("<a href='#' title='start'>&nbsp;&gt;</a>&nbsp;<a href='#' title='stop'>||</a>")
+        $course_tr = $("tbody:last:not(:has(input)) tr:not(:first)");
+        $course_tr.find("td:first").append("<a href='#' title='start'>&nbsp;&gt;</a>&nbsp;<a href='#' title='stop'>||</a>");
 
         //调用默认行为得用javascript层的click()
         //$course_tr.find("td:first").attr("onclick", $course_tr.find("td:first").attr("href"))
@@ -47,17 +49,17 @@ $(function(){
 
         chrome.extension.sendMessage({"q":"state"}, function(dict){
             for(k in dict){
-                $line = $("table:last tr:contains('" +k+ "')")
+                $line = $("table:last tr:contains('" +k+ "')");
                     if ($line.length>0){
                         // 移除 " > "  显得人性化
-                        $line.find("a[title=start]").remove()   // @2013-09-05
+                        $line.find("a[title=start]").remove();   // @2013-09-05
                             if( parseInt($line.find("td:eq(10)").text()) - parseInt($line.find("td:eq(11)").text()) > 0 ){
-                                $line.find("a:first")[0].click()    // 必须是javascript层的click才行！！
+                                $line.find("a:first")[0].click();    // 必须是javascript层的click才行！！
                             }else{
                                 chrome.extension.sendMessage({"q":"count","id":k}, function(count){     
-                                    $subm[5].value = "" + count
+                                    $subm[5].value = "" + count;
                                 })
-                                setTimeout("$subm[5].click()", 2000)                            // 设置探监间隔
+                                setTimeout("$subm[5].click()", 2000);                            // 设置探监间隔
                             }
                     }
             }
@@ -65,23 +67,25 @@ $(function(){
 
         //消息异步处理，所以会到这里
         // 单击开始的响应函数
-        $("a[title=start]").click(function(){
-            id = $(this).parent().next().text()     // 由排课程编号改成排班号。
+        $("a[title=start]").click(function(e){
+            e.preventDefault();
+            id = $(this).parent().next().text();     // 由排课程编号改成排班号。
             // console.log(new Date().toLocaleString() + ":  send start id: " + id)
-            tlog("start: " + id)
+            tlog("start: " + id);
             chrome.extension.sendMessage({"q":"start", "id":id}, function(){
-                setTimeout("$subm[5].click()", 2000)
+                setTimeout("$subm[5].click()", 2000);
             })
             return false    // 连接不跳转
         })
 
         // 单击停止的响应函数
-        $("a[title=stop]").click(function(){
-            id = $(this).parent().next().text()     // 由排课程编号改成排班号。
+        $("a[title=stop]").click(function(e){
+            e.preventDefault();
+            id = $(this).parent().next().text();     // 由排课程编号改成排班号。
             chrome.extension.sendMessage({"q":"stop", "id":id}, function(){
-                setTimeout("$subm[5].click()", 2000)
+                setTimeout("$subm[5].click()", 2000);
                 // console.log("stop callback ~ ok")
-                tlog("stop: " + id)
+                tlog("stop: " + id);
             })         
             return false
         })
@@ -90,28 +94,37 @@ $(function(){
 
         //filer 
         $.each([0,2,4,8,16,32,64], function(x,i){
-            $item = $('<sapn id="filter" title="显示剩余'+i+'位以下的抢手货">[<a href="#">'+i+'</a>]</span>')
-            $item.insertAfter("span#lblTs0")
-            $item.click(function(){
-                $line = $("table:last tr:gt(0)")
+            $item = $('<sapn id="filter" title="显示剩余'+i+'位以下的抢手货">[<a href="#">'+i+'</a>]</span>');
+            $item.insertAfter("span#lblTs0");
+            $item.click(function(e){
+                e.preventDefault();
+                $line = $("table:last tr:gt(0)");
                 $line.each(function(){
-                    A = parseInt($(this).find("td:eq(10)").text())
-                    B = parseInt($(this).find("td:eq(11)").text())
+                    A = parseInt($(this).find("td:eq(10)").text());
+                    B = parseInt($(this).find("td:eq(11)").text());
                     //console.log(""+A+" "+B)
-                    if (A==B){
+                    if (i>0 && A==B){
                         $(this).remove();
                     }
-                if (i>0 && A-B>i){
-                    $(this).remove();
-                }
+                    if (i>=0 && A-B>i){
+                        $(this).remove();
+                    }
                 })
             })
         })
 
         //show all in one page
-        $("span#lblTs0").attr("title", "单击:一页显示所有课程").click(function(){
-            $("input:text").val("5000").attr({'title':'jumper: changed!'}).focus()
-            setTimeout("$subm[5].click()", 2000)
+        $("span#lblTs0").wrapInner('<a href="#"></a>');
+        $("span#lblTs0 a").attr("title", "单击:一页显示所有课程").click(function(e){
+            e.preventDefault();
+            $("input:text").val("5000").attr({'title':'jumper: changed!'}).focus();
+            //setTimeout("$subm[5].click()", 2000);
+            $subm[5].click();
+
+            // test failed
+            //var ke = jQuery.Event("keypress");//模拟一个键盘事件 
+            //ke.keyCode = 13;//keyCode=13是回车 
+            //$("input:text").trigger(ke);
         })
 
         // chrome.extension.sendMessage({"q":"state"}, function(dict){                                    
@@ -120,13 +133,13 @@ $(function(){
         // })
         
         //增加提示，软件人性化
-        $($subm[3]).after("<span style=\"color:gray;font-size:13px\"><strong>jumper</strong>: enter F12 , goto \"console\" panel to know <strong>TIME</strong> you make it!</span>")
+        $($subm[3]).after("<span style=\"color:gray;font-size:13px\"><strong>jumper</strong>: enter F12 , goto \"console\" panel to know <strong>TIME</strong> you make it!</span>");
 
     }
     // "if length==6" end 
 
     //美观，行与行交替着色
     //没有输入框的表格的非首行tr
-    $("table:last:not(:has(input)) tr:not(:first):odd").css({"backgroundColor":"rgb(208,233,255)"})          
+    $("table:last:not(:has(input)) tr:not(:first):odd").css({"backgroundColor":"rgb(208,233,255)"});         
 
 })
