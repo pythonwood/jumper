@@ -8,7 +8,7 @@
 //		"default_icon":	"icon16.png",	//小图标不需显示
 //		"popup":	"popup.html"
 //	},
-	"permissions": ["tabs", "http://jwc.jnu.edu.cn/*", "http://202.116.0.176/*"],			//权限,用于定义所需的网络资源 
+	"permissions": ["tabs", "http://jwc.jnu.edu.cn/*", "http://202.116.0.176/*", "http://jwxt.jnu.edu.cn/*"],			//权限,用于定义所需的网络资源 
 //	"permissions": [ "*://*/", "tabs"],
 	"icons":{
         	"16": "icon16.png",		//不能是19的
