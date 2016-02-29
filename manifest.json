@@ -20,22 +20,22 @@
 	"background": { "scripts": ["background.js"] },
 	"content_scripts" : [
 		{
-		"matches": ["http://jwc.jnu.edu.cn/Web/Secure/PaiKeXuanKe/wfrm_XK_XuanKe.aspx", "http://202.116.0.176/Secure/PaiKeXuanKe/wfrm_XK_XuanKe.aspx"],		
+		"matches": ["http://jwc.jnu.edu.cn/Web/Secure/PaiKeXuanKe/wfrm_XK_XuanKe.aspx", "http://jwxt.jnu.edu.cn/Secure/PaiKeXuanKe/wfrm_XK_XuanKe.aspx"],		
 		"js": ["jquery.min.js", "click.js"],
 		"all_frames": true						//为了iframe frame都响应js
 		},
 		{
-		"matches": ["http://jwc.jnu.edu.cn/Web/Secure/PaiKeXuanKe/wfrm_Xk_ReadMeCn.aspx", "http://202.116.0.176/Secure/PaiKeXuanKe/wfrm_Xk_ReadMeCn.aspx"],	
+		"matches": ["http://jwc.jnu.edu.cn/Web/Secure/PaiKeXuanKe/wfrm_Xk_ReadMeCn.aspx", "http://jwxt.jnu.edu.cn/Secure/PaiKeXuanKe/wfrm_Xk_ReadMeCn.aspx"],	
 		"js": ["jquery.min.js", "readme_click.js"],
 		"all_frames": true		
 		},
 		{
-		"matches": ["http://jwc.jnu.edu.cn/Web/areaLeft.aspx", "http://202.116.0.176/areaLeft.aspx"],	
+		"matches": ["http://jwc.jnu.edu.cn/Web/areaLeft.aspx", "http://jwxt.jnu.edu.cn/areaLeft.aspx"],	
 		"js": ["jquery.min.js", "area-left.js"],
 		"all_frames": true		
 		},
 		{
-		"matches": ["http://jwc.jnu.edu.cn/Web/Secure/Cjgl/Cjgl_Cjcx_XsCxXqCj.aspx", "http://202.116.0.176/Secure/Cjgl/Cjgl_Cjcx_XsCxXqCj.aspx"],	
+		"matches": ["http://jwc.jnu.edu.cn/Web/Secure/Cjgl/Cjgl_Cjcx_XsCxXqCj.aspx", "http://jwxt.jnu.edu.cn/Secure/Cjgl/Cjgl_Cjcx_XsCxXqCj.aspx"],	
 		"js": ["jquery.min.js", "mark.js"],
 		"all_frames": true		
 		}
